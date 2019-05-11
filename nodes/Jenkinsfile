@@ -6,6 +6,7 @@ pipeline {
         test = "None"
         AWS_ACCESS_KEY_ID = credentials('aws_access_key_id')
         AWS_SECRET_ACCESS_KEY = credentials('aws_secret_access_key')
+        GOOGLE_APPLICATION_CREDENTIALS = credentials('gcp-jenkins-json')
     }
     stages {
         stage('Fetch Infrastructure Code') {
@@ -15,23 +16,27 @@ pipeline {
                     credentialsId: 'chef-conf-github',
                     branch: 'dev'
                 )
-                sh 'ls -la'
             }
         }
         stage('Initialize Node Folders') {
             steps {
-                echo "Running init to check conectivity to remote state"
+                echo "Running init to check conectivity to remote state (AWS)"
                 sh '''#!/bin/bash
                 cd Terraform/AWS/TestNodes
                 terraform init
                 '''
+                echo "Running init to check connectivity to remote state (Azure)"
                 withCredentials([azureServicePrincipal('azure-sp-demo')]) {
                     sh '''#!/bin/bash
                     cd Terraform/Azure/TestNodes
                     terraform init
                     '''
                 }
-                
+                echo "Running init to check connectivity to remote state (GCP)"
+                sh '''#!/bin/bash
+                cd Terraform/GCP/TestNodes
+                terraform init
+                '''
             }
         }
     }
