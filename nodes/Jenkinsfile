@@ -9,7 +9,7 @@ pipeline {
         GOOGLE_APPLICATION_CREDENTIALS = credentials('gcp-jenkins-json')
     }
     stages {
-        stage('Fetch Infrastructure Code') {
+        stage('Fetch Infra Code') {
             steps {
                 git(
                     url: 'https://github.com/Chambras/ChefConf2019.git',
