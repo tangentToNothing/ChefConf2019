@@ -9,7 +9,7 @@ pipeline {
         stage('Build') {
             steps {
                 echo "Test"
-                bash '''#!/bin/bash
+                sh '''#!/bin/bash
                 terraform -v
                 '''
             }
