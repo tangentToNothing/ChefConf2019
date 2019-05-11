@@ -100,6 +100,10 @@ pipeline {
             }
         }
         stage('Destroy') {
+            input {
+                message "Are you sure you want to destroy the nodes in all clouds?"
+                ok "Yes"
+            }
             steps {
                 echo "Running destroy (AWS)"
                 sh '''#!/bin/bash
