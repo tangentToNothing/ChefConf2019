@@ -19,6 +19,7 @@ pipeline {
         stage('Initialize Node Folders') {
             steps {
                 echo "Running init to check conectivity to remote state"
+                sh 'ls -la'
             }
         }
     }
