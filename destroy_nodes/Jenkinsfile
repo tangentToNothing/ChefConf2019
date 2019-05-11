@@ -4,11 +4,120 @@ pipeline {
     }
     environment {
         test = "None"
+        AWS_ACCESS_KEY_ID = credentials('aws_access_key_id')
+        AWS_SECRET_ACCESS_KEY = credentials('aws_secret_access_key')
+        GOOGLE_APPLICATION_CREDENTIALS = credentials('gcp-jenkins-json')
     }
     stages {
+        stage('Fetch Infrastructure Code') {
+            steps {
+                git(
+                    url: 'https://github.com/Chambras/ChefConf2019.git',
+                    credentialsId: 'chef-conf-github',
+                    branch: 'dev'
+                )
+            }
+        }
         stage('Initialize Node Folders') {
             steps {
-                echo "Running init to check conectivity to remote state"
+                echo "Running init to check conectivity to remote state (AWS)"
+                sh '''#!/bin/bash
+                cd Terraform/AWS/TestNodes
+                terraform init
+                '''
+                echo "Running init to check connectivity to remote state (Azure)"
+                withCredentials([azureServicePrincipal('azure-sp-demo')]) {
+                    sh '''#!/bin/bash
+                    cd Terraform/Azure/TestNodes
+                    terraform init
+                    '''
+                }
+                echo "Running init to check connectivity to remote state (GCP)"
+                sh '''#!/bin/bash
+                cd Terraform/GCP/TestNodes
+                terraform init
+                '''
+            }
+        }
+        stage('Refresh State') {
+            steps {
+                echo "Running refresh (AWS)"
+                sh '''#!/bin/bash
+                cd Terraform/AWS/TestNodes
+                terraform refresh
+                '''
+                echo "Running refresh (Azure)"
+                withCredentials([azureServicePrincipal('azure-sp-demo')]) {
+                    sh '''#!/bin/bash
+                    cd Terraform/Azure/TestNodes
+                    terraform refresh
+                    '''
+                }
+                echo "Running refresh (GCP)"
+                sh '''#!/bin/bash
+                cd Terraform/GCP/TestNodes
+                terraform refresh
+                '''
+            }
+        }
+        stage('Output') {
+            steps {
+                script {
+                    try {
+                        echo "TF Output (AWS)"
+                        sh '''#!/bin/bash
+                        cd Terraform/AWS/TestNodes
+                        terraform output
+                        '''
+                    } catch(err) {
+                        echo "AWS has no infrastructure"
+                    }
+                }
+                script {
+                    try {
+                        echo "TF Output (Azure)"
+                        withCredentials([azureServicePrincipal('azure-sp-demo')]) {
+                            sh '''#!/bin/bash
+                            cd Terraform/Azure/TestNodes
+                            terraform output
+                            '''
+                        }
+                    } catch(err) {
+                        echo "Azure has no infrastructure"
+                    }
+                }
+                script {
+                    try {
+                        echo "TF Output (GCP)"
+                        sh '''#!/bin/bash
+                        cd Terraform/GCP/TestNodes
+                        terraform output
+                        '''
+                    } catch(err) {
+                        echo "GCP has no infrastructure"
+                    }
+                }
+            }
+        }
+        stage('Destroy') {
+            steps {
+                echo "Running destroy (AWS)"
+                sh '''#!/bin/bash
+                cd Terraform/AWS/TestNodes
+                terraform destroy -force
+                '''
+                echo "Running destroy (Azure)"
+                withCredentials([azureServicePrincipal('azure-sp-demo')]) {
+                    sh '''#!/bin/bash
+                    cd Terraform/Azure/TestNodes
+                    terraform destroy -force
+                    '''
+                }
+                echo "Running destroy (GCP)"
+                sh '''#!/bin/bash
+                cd Terraform/GCP/TestNodes
+                terraform destroy -force
+                '''
             }
         }
     }
