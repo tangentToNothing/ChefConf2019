@@ -7,6 +7,7 @@ pipeline {
         AWS_ACCESS_KEY_ID = credentials('aws_access_key_id')
         AWS_SECRET_ACCESS_KEY = credentials('aws_secret_access_key')
         GOOGLE_APPLICATION_CREDENTIALS = credentials('gcp-jenkins-json')
+        AZURE_SP_CERT_KEY = credentials('azure-sp-cert-no-pass')
     }
     stages {
         stage('Fetch Infra Code') {
@@ -29,7 +30,6 @@ pipeline {
                 withCredentials([azureServicePrincipal('azure-sp-demo')]) {
                     sh '''#!/bin/bash
                     cd Terraform/Azure/TestNodes
-                    az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET -t $AZURE_TENANT_ID
                     terraform init
                     '''
                 }
@@ -117,6 +117,7 @@ pipeline {
                         withCredentials([azureServicePrincipal('azure-sp-demo')]) {
                             sh '''#!/bin/bash
                             cd Terraform/Azure/TestNodes
+                            az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_SP_CERT_KEY -t $AZURE_TENANT_ID
                             terraform apply --auto-approve
                             '''
                         }
