@@ -6,6 +6,16 @@ pipeline {
         test = "None"
     }
     stages {
+        stage('Fetch Infrastructure Code') {
+            steps {
+                git(
+                    url: 'https://github.com/Chambras/ChefConf2019.git',
+                    credentialsId: 'chef-conf-github',
+                    branch: 'dev'
+                )
+                sh 'ls -la'
+            }
+        }
         stage('Initialize Node Folders') {
             steps {
                 echo "Running init to check conectivity to remote state"
