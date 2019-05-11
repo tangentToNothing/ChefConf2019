@@ -100,24 +100,36 @@ pipeline {
             }
         }
         stage('Build Nodes') {
-            steps {
-                echo "Running apply (AWS)"
-                sh '''#!/bin/bash
-                cd Terraform/AWS/TestNodes
-                terraform apply --auto-approve
-                '''
-                echo "Running apply (Azure)"
-                withCredentials([azureServicePrincipal('azure-sp-demo')]) {
-                    sh '''#!/bin/bash
-                    cd Terraform/Azure/TestNodes
-                    terraform apply --auto-approve
-                    '''
+            parallel {
+                stage('AWS') {
+                    steps {
+                        echo "Running apply (AWS)"
+                        sh '''#!/bin/bash
+                        cd Terraform/AWS/TestNodes
+                        terraform apply --auto-approve
+                        '''
+                    }
                 }
-                echo "Running apply (GCP)"
-                sh '''#!/bin/bash
-                cd Terraform/GCP/TestNodes
-                terraform apply --auto-approve
-                '''
+                stage('Azure') {
+                    steps {
+                        echo "Running apply (Azure)"
+                        withCredentials([azureServicePrincipal('azure-sp-demo')]) {
+                            sh '''#!/bin/bash
+                            cd Terraform/Azure/TestNodes
+                            terraform apply --auto-approve
+                            '''
+                        }
+                    }
+                }
+                stage('GCP') {
+                    steps {
+                        echo "Running apply (GCP)"
+                        sh '''#!/bin/bash
+                        cd Terraform/GCP/TestNodes
+                        terraform apply --auto-approve
+                        '''
+                    }
+                }
             }
         }
     }
