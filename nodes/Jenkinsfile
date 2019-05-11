@@ -25,7 +25,7 @@ pipeline {
                 cd Terraform/AWS/TestNodes
                 terraform init
                 '''
-                withCredentials([azureServicePrincipal('azure_service_principal')]) {
+                withCredentials([azureServicePrincipal('azure-sp-demo')]) {
                     sh '''#!/bin/bash
                     cd Terraform/Azure/TestNodes
                     terraform init
