@@ -4,3 +4,5 @@
 chef-repo
 chef-repo/
 chef-repo/*
+.zip
+*.zip
