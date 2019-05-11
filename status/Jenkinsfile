@@ -41,22 +41,43 @@ pipeline {
         }
         stage('Refresh State') {
             steps {
-                echo "Running init to check conectivity to remote state (AWS)"
+                echo "Running refresh (AWS)"
                 sh '''#!/bin/bash
                 cd Terraform/AWS/TestNodes
                 terraform refresh
                 '''
-                echo "Running init to check connectivity to remote state (Azure)"
+                echo "Running refresh (Azure)"
                 withCredentials([azureServicePrincipal('azure-sp-demo')]) {
                     sh '''#!/bin/bash
                     cd Terraform/Azure/TestNodes
                     terraform refresh
                     '''
                 }
-                echo "Running init to check connectivity to remote state (GCP)"
+                echo "Running refresh (GCP)"
                 sh '''#!/bin/bash
                 cd Terraform/GCP/TestNodes
                 terraform refresh
+                '''
+            }
+        }
+        stage('Output') {
+            steps {
+                echo "TF Output (AWS)"
+                sh '''#!/bin/bash
+                cd Terraform/AWS/TestNodes
+                terraform output
+                '''
+                echo "TF Output (Azure)"
+                withCredentials([azureServicePrincipal('azure-sp-demo')]) {
+                    sh '''#!/bin/bash
+                    cd Terraform/Azure/TestNodes
+                    terraform output
+                    '''
+                }
+                echo "TF Output (GCP)"
+                sh '''#!/bin/bash
+                cd Terraform/GCP/TestNodes
+                terraform output
                 '''
             }
         }
