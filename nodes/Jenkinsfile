@@ -25,6 +25,13 @@ pipeline {
                 cd Terraform/AWS/TestNodes
                 terraform init
                 '''
+                withCredentials([azureServicePrincipal('azure_service_principal')]) {
+                    sh '''#!/bin/bash
+                    cd Terraform/Azure/TestNodes
+                    terraform init
+                    '''
+                }
+                
             }
         }
     }
