@@ -4,6 +4,8 @@ pipeline {
     }
     environment {
         test = "None"
+        AWS_ACCESS_KEY_ID = credentials('aws_access_key_id')
+        AWS_SECRET_ACCESS_KEY = credentials('aws_secret_access_key')
     }
     stages {
         stage('Fetch Infrastructure Code') {
@@ -19,7 +21,10 @@ pipeline {
         stage('Initialize Node Folders') {
             steps {
                 echo "Running init to check conectivity to remote state"
-                sh 'ls -la'
+                sh '''#!/bin/bash
+                cd Terraform/AWS/TestNodes
+                terraform init
+                '''
             }
         }
     }
