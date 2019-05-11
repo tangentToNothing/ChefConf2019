@@ -4,4 +4,4 @@
 #
 # Copyright:: 2019, The Authors, All Rights Reserved.
 
-include_recipe "hardening::stigs"
+include_recipe 'hardening::stigs'
