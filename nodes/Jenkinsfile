@@ -39,5 +39,86 @@ pipeline {
                 '''
             }
         }
+        stage('Refresh State') {
+            steps {
+                echo "Running refresh (AWS)"
+                sh '''#!/bin/bash
+                cd Terraform/AWS/TestNodes
+                terraform refresh
+                '''
+                echo "Running refresh (Azure)"
+                withCredentials([azureServicePrincipal('azure-sp-demo')]) {
+                    sh '''#!/bin/bash
+                    cd Terraform/Azure/TestNodes
+                    terraform refresh
+                    '''
+                }
+                echo "Running refresh (GCP)"
+                sh '''#!/bin/bash
+                cd Terraform/GCP/TestNodes
+                terraform refresh
+                '''
+            }
+        }
+        stage('Output') {
+            steps {
+                script {
+                    try {
+                        echo "TF Output (AWS)"
+                        sh '''#!/bin/bash
+                        cd Terraform/AWS/TestNodes
+                        terraform output
+                        '''
+                    } catch(err) {
+                        echo "AWS has no infrastructure"
+                    }
+                }
+                script {
+                    try {
+                        echo "TF Output (Azure)"
+                        withCredentials([azureServicePrincipal('azure-sp-demo')]) {
+                            sh '''#!/bin/bash
+                            cd Terraform/Azure/TestNodes
+                            terraform output
+                            '''
+                        }
+                    } catch(err) {
+                        echo "Azure has no infrastructure"
+                    }
+                }
+                script {
+                    try {
+                        echo "TF Output (GCP)"
+                        sh '''#!/bin/bash
+                        cd Terraform/GCP/TestNodes
+                        terraform output
+                        '''
+                    } catch(err) {
+                        echo "GCP has no infrastructure"
+                    }
+                }
+            }
+        }
+        stage('Build Nodes') {
+            steps {
+                echo "Running apply (AWS)"
+                sh '''#!/bin/bash
+                cd Terraform/AWS/TestNodes
+                terraform apply --auto-approve
+                '''
+                echo "Running apply (Azure)"
+                withCredentials([azureServicePrincipal('azure-sp-demo')]) {
+                    sh '''#!/bin/bash
+                    cd Terraform/Azure/TestNodes
+                    terraform apply --auto-approve
+                    '''
+                }
+                echo "Running apply (GCP)"
+                sh '''#!/bin/bash
+                cd Terraform/GCP/TestNodes
+                terraform apply --auto-approve
+                '''
+            }
+        }
     }
 }
