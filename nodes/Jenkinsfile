@@ -1,0 +1,15 @@
+pipeline {
+    agent {
+        label 'master'
+    }
+    environment {
+        test = "None"
+    }
+    stages {
+        stage('Initialize Node Folders') {
+            steps {
+                echo "Running init to check conectivity to remote state"
+            }
+        }
+    }
+}

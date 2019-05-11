@@ -1,0 +1,6 @@
+.chef
+.chef/
+.chef/*
+chef-repo
+chef-repo/
+chef-repo/*
