@@ -8,6 +8,7 @@ pipeline {
         AWS_SECRET_ACCESS_KEY = credentials('aws_secret_access_key')
         GOOGLE_APPLICATION_CREDENTIALS = credentials('gcp-jenkins-json')
         AZURE_SP_CERT_KEY = credentials('azure-sp-cert-no-pass')
+        ARM_CLIENT_ID = credentials('azure-client-id')
     }
     stages {
         stage('Fetch Infra Code') {
