@@ -134,5 +134,27 @@ pipeline {
                 }
             }
         }
+        stage('Bootstrap') {
+            parallel {
+                stage('AWS') {
+                    steps {
+                        echo "Bootstrapping AWS infra"
+                        sh '''#!/bin/bash
+                        knife node list
+                        '''
+                    }
+                }
+                stage('Azure') {
+                    steps {
+                        echo "Azure not yet working"
+                    }
+                }
+                stage('GCP') {
+                    steps {
+                        echo "Bootstrapping GCP infra"
+                    }
+                }
+            }
+        }
     }
 }
