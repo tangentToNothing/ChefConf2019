@@ -9,6 +9,7 @@ pipeline {
         GOOGLE_APPLICATION_CREDENTIALS = credentials('gcp-jenkins-json')
         AZURE_SP_CERT_KEY = credentials('azure-sp-cert-no-pass')
         ARM_CLIENT_ID = credentials('azure-client-id')
+        PRIVATE_KEY = credentials('chef-private-key')
     }
     stages {
         stage('Fetch Infra Code') {
@@ -141,7 +142,8 @@ pipeline {
                     steps {
                         echo "Bootstrapping AWS infra"
                         sh '''#!/bin/bash
-                        knife node list
+                        cd Terraform/AWS/TestNodes
+                        knife bootstrap $(terraform output public_ip_address) -x ec2-user -i $PRIVATE_KEY -N AWSServerTest -r 'chef-client,audit' --sudo --yes
                         '''
                     }
                 }
