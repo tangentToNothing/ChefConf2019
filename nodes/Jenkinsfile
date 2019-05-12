@@ -155,6 +155,10 @@ pipeline {
                 stage('GCP') {
                     steps {
                         echo "Bootstrapping GCP infra"
+                        sh '''#!/bin/bash
+                        cd Terraform/GCP/TestNodes
+                        knife bootstrap $(terraform output public_ip_address) -x chefconf -i $PRIVATE_KEY -N GCPServerTest -r 'chef-client,audit' --sudo --yes
+                        '''
                     }
                 }
             }
