@@ -15,6 +15,7 @@ pipeline {
         ARM_CLIENT_CERTIFICATE_PATH = credentials('azure-sp-demo-cert-pass')
         ARM_CLIENT_CERTIFICATE_PASSWORD = ""
         ARM_ENVIRONMENT = "public"
+        CHEF_TOKEN = credentials('chef-automate-api-token')
     }
     stages {
         stage('Fetch Infra Code') {
@@ -158,6 +159,20 @@ pipeline {
                         sh '''#!/bin/bash
                         cd Terraform/Azure/TestNodes
                         knife bootstrap $(terraform output public_ip_address) -x chefconf -i $PRIVATE_KEY -N AzureServerTest -r 'chef-client,audit' --sudo --yes
+                        curl -s --insecure -H "api-token: $CHEF_TOKEN" https://chefconf2019v2.eastus.cloudapp.azure.com/api/v0/nodes/bulk-create -d '
+                        {"nodes": [{
+                            "name": "AzureServerTest"
+                            "manager":"automate",
+                            "target_config": {
+                                "backend":"ssh",
+                                "hosts":["$(terraform output public_ip_address)"],
+                                "secrets":["12762a4e-8f6f-434c-a71b-5465975ec36d"],
+                                "port": 22
+                            },
+                            "tags": []
+                            }
+                        ]
+                        }'
                         '''
                     }
                 }
