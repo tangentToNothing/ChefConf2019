@@ -4,7 +4,7 @@ maintainer_email 'none@none.com'
 license 'All Rights Reserved'
 description 'Installs/Configures demo hardening code and files'
 long_description 'Installs/Configures demo hardening code and files'
-version '0.1.0'
+version '0.1.6'
 chef_version '>= 13.0'
 
 # The `issues_url` points to the location where issues for this cookbook are

@@ -22,7 +22,7 @@ template '/etc/pam.d/password-auth' do
     source 'password-auth.erb'
 end
 
-template 'login.defs' do
+template '/etc/login.defs' do
     source 'login.defs.erb'
 end
 
