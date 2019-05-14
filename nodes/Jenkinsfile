@@ -10,6 +10,11 @@ pipeline {
         AZURE_SP_CERT_KEY = credentials('azure-sp-cert-no-pass')
         ARM_CLIENT_ID = credentials('azure-client-id')
         PRIVATE_KEY = credentials('chef-private-key')
+        ARM_TENANT_ID = credentials('azure-sp-demo-tenant-id')
+        ARM_SUBSCRIPTION_ID = credentials('azure-sp-demo-sub-id')
+        ARM_CLIENT_CERTIFICATE_PATH = credentials('azure-sp-demo-cert-pass')
+        ARM_CLIENT_CERTIFICATE_PASSWORD = ""
+        ARM_ENVIRONMENT = "public"
     }
     stages {
         stage('Fetch Infra Code') {
