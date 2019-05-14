@@ -150,6 +150,20 @@ pipeline {
                         sh '''#!/bin/bash
                         cd Terraform/AWS/TestNodes
                         knife bootstrap $(terraform output public_ip_address) -x ec2-user -i $PRIVATE_KEY -N AWSServerTest -r 'chef-client,audit' --sudo --yes --no-host-key-verify
+                        curl -s --insecure -H "api-token: $CHEF_TOKEN" https://chefconf2019v2.eastus.cloudapp.azure.com/api/v0/nodes/bulk-create -d '
+                        {"nodes": [{
+                            "name": "AWSServerTest"
+                            "manager":"automate",
+                            "target_config": {
+                                "backend":"ssh",
+                                "hosts":["$(terraform output public_ip_address)"],
+                                "secrets":["2ced2fb8-b190-4e80-bb6e-6278b0ed7c1c"],
+                                "port": 22
+                            },
+                            "tags": []
+                            }
+                        ]
+                        }'
                         '''
                     }
                 }
@@ -182,6 +196,20 @@ pipeline {
                         sh '''#!/bin/bash
                         cd Terraform/GCP/TestNodes
                         knife bootstrap $(terraform output public_ip_address) -x chefconf -i $PRIVATE_KEY -N GCPServerTest -r 'chef-client,audit' --sudo --yes --no-host-key-verify
+                        curl -s --insecure -H "api-token: $CHEF_TOKEN" https://chefconf2019v2.eastus.cloudapp.azure.com/api/v0/nodes/bulk-create -d '
+                        {"nodes": [{
+                            "name": "GCPServerTest"
+                            "manager":"automate",
+                            "target_config": {
+                                "backend":"ssh",
+                                "hosts":["$(terraform output public_ip_address)"],
+                                "secrets":["12762a4e-8f6f-434c-a71b-5465975ec36d"],
+                                "port": 22
+                            },
+                            "tags": []
+                            }
+                        ]
+                        }'
                         '''
                     }
                 }
