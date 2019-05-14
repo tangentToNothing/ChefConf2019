@@ -125,7 +125,7 @@ pipeline {
                             sh '''#!/bin/bash
                             cd Terraform/Azure/TestNodes
                             az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_SP_CERT_KEY -t $AZURE_TENANT_ID
-                            terraform plan
+                            terraform apply --auto-approve
                             '''
                         }
                     }
@@ -154,7 +154,11 @@ pipeline {
                 }
                 stage('Azure') {
                     steps {
-                        echo "Azure not yet working"
+                        echo "Bootstrapping Azure Infra"
+                        sh '''#!/bin/bash
+                        cd Terraform/Azure/TestNodes
+                        knife bootstrap $(terraform output public_ip_address) -x chefconf -i $PRIVATE_KEY -N AzureServerTest -r 'chef-client,audit' --sudo --yes
+                        '''
                     }
                 }
                 stage('GCP') {
