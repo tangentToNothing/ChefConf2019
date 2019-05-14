@@ -116,13 +116,13 @@ pipeline {
                 stage('Azure') {
                     steps {
                         echo "Running apply (Azure)"
-                        // withCredentials([azureServicePrincipal('azure-sp-demo')]) {
-                        //     sh '''#!/bin/bash
-                        //     cd Terraform/Azure/TestNodes
-                        //     az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_SP_CERT_KEY -t $AZURE_TENANT_ID
-                        //     terraform apply --auto-approve
-                        //     '''
-                        // }
+                        withCredentials([azureServicePrincipal('azure-sp-demo')]) {
+                            sh '''#!/bin/bash
+                            cd Terraform/Azure/TestNodes
+                            az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_SP_CERT_KEY -t $AZURE_TENANT_ID
+                            terraform plan
+                            '''
+                        }
                     }
                 }
                 stage('GCP') {
