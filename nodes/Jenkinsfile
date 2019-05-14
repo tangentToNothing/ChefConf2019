@@ -152,7 +152,7 @@ pipeline {
                         knife bootstrap $(terraform output public_ip_address) -x ec2-user -i $PRIVATE_KEY -N AWSServerTest -r 'chef-client,audit' --sudo --yes --no-host-key-verify
                         curl -s --insecure -H "api-token: $CHEF_TOKEN" https://chefconf2019v2.eastus.cloudapp.azure.com/api/v0/nodes/bulk-create -d '
                         {"nodes": [{
-                            "name": "AWSServerTest"
+                            "name": "AWSServerTest",
                             "manager":"automate",
                             "target_config": {
                                 "backend":"ssh",
@@ -175,7 +175,7 @@ pipeline {
                         knife bootstrap $(terraform output public_ip_address) -x chefconf -i $PRIVATE_KEY -N AzureServerTest -r 'chef-client,audit' --sudo --yes --no-host-key-verify
                         curl -s --insecure -H "api-token: $CHEF_TOKEN" https://chefconf2019v2.eastus.cloudapp.azure.com/api/v0/nodes/bulk-create -d '
                         {"nodes": [{
-                            "name": "AzureServerTest"
+                            "name": "AzureServerTest",
                             "manager":"automate",
                             "target_config": {
                                 "backend":"ssh",
@@ -198,7 +198,7 @@ pipeline {
                         knife bootstrap $(terraform output public_ip_address) -x chefconf -i $PRIVATE_KEY -N GCPServerTest -r 'chef-client,audit' --sudo --yes --no-host-key-verify
                         curl -s --insecure -H "api-token: $CHEF_TOKEN" https://chefconf2019v2.eastus.cloudapp.azure.com/api/v0/nodes/bulk-create -d '
                         {"nodes": [{
-                            "name": "GCPServerTest"
+                            "name": "GCPServerTest",
                             "manager":"automate",
                             "target_config": {
                                 "backend":"ssh",
