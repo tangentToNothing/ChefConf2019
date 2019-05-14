@@ -15,6 +15,7 @@ pipeline {
         ARM_CLIENT_CERTIFICATE_PATH = credentials('azure-sp-demo-cert-pass')
         ARM_CLIENT_CERTIFICATE_PASSWORD = ""
         ARM_ENVIRONMENT = "public"
+        CHEF_TOKEN = credentials('chef-automate-api-token')
     }
     stages {
         stage('Fetch Infra Code') {
@@ -119,6 +120,11 @@ pipeline {
                         sh '''#!/bin/bash
                         cd Terraform/AWS/TestNodes
                         terraform destroy -force
+                        curl -s --insecure -H "api-token: $CHEF_TOKEN" https://chefconf2019v2.eastus.cloudapp.azure.com/api/v0/nodes/delete -d '{
+                        "filters": [
+                            {"key": "name", "values": ["AWSServerTest"]}
+                        ]
+                        }'
                         '''
                     }
                 }
@@ -129,6 +135,11 @@ pipeline {
                             sh '''#!/bin/bash
                             cd Terraform/Azure/TestNodes
                             terraform destroy -force
+                            curl -s --insecure -H "api-token: $CHEF_TOKEN" https://chefconf2019v2.eastus.cloudapp.azure.com/api/v0/nodes/delete -d '{
+                            "filters": [
+                                {"key": "name", "values": ["AzureServerTest"]}
+                            ]
+                            }'
                             '''
                         }
                     }
@@ -139,6 +150,11 @@ pipeline {
                         sh '''#!/bin/bash
                         cd Terraform/GCP/TestNodes
                         terraform destroy -force
+                        curl -s --insecure -H "api-token: $CHEF_TOKEN" https://chefconf2019v2.eastus.cloudapp.azure.com/api/v0/nodes/delete -d '{
+                        "filters": [
+                            {"key": "name", "values": ["GCPServerTest"]}
+                        ]
+                        }'
                         '''
                     }
                 }
