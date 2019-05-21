@@ -149,7 +149,7 @@ pipeline {
                         echo "Bootstrapping AWS infra"
                         sh '''#!/bin/bash
                         cd Terraform/AWS/TestNodes
-                        knife bootstrap $(terraform output public_ip_address) -x ec2-user -i $PRIVATE_KEY -N AWSServerTest -r 'chef-client,audit' --sudo --yes --no-host-key-verify
+                        knife bootstrap $(terraform output public_ip_address) -x ec2-user -i $PRIVATE_KEY -N AWSServerTest -r 'role[web]' -E dev --sudo --yes --no-host-key-verify
                         curl -s --insecure -H "api-token: $CHEF_TOKEN" https://chefconf2019v2.eastus.cloudapp.azure.com/api/v0/nodes/bulk-create -d '
                         {"nodes": [{
                             "name": "AWSServerTest",
@@ -172,7 +172,7 @@ pipeline {
                         echo "Bootstrapping Azure Infra"
                         sh '''#!/bin/bash
                         cd Terraform/Azure/TestNodes
-                        knife bootstrap $(terraform output public_ip_address) -x chefconf -i $PRIVATE_KEY -N AzureServerTest -r 'chef-client,audit' --sudo --yes --no-host-key-verify
+                        knife bootstrap $(terraform output public_ip_address) -x chefconf -i $PRIVATE_KEY -N AzureServerTest -r 'role[web]' -E dev --sudo --yes --no-host-key-verify
                         curl -s --insecure -H "api-token: $CHEF_TOKEN" https://chefconf2019v2.eastus.cloudapp.azure.com/api/v0/nodes/bulk-create -d '
                         {"nodes": [{
                             "name": "AzureServerTest",
@@ -195,7 +195,7 @@ pipeline {
                         echo "Bootstrapping GCP infra"
                         sh '''#!/bin/bash
                         cd Terraform/GCP/TestNodes
-                        knife bootstrap $(terraform output public_ip_address) -x chefconf -i $PRIVATE_KEY -N GCPServerTest -r 'chef-client,audit' --sudo --yes --no-host-key-verify
+                        knife bootstrap $(terraform output public_ip_address) -x chefconf -i $PRIVATE_KEY -N GCPServerTest -r 'role[web]' -E dev --sudo --yes --no-host-key-verify
                         curl -s --insecure -H "api-token: $CHEF_TOKEN" https://chefconf2019v2.eastus.cloudapp.azure.com/api/v0/nodes/bulk-create -d '
                         {"nodes": [{
                             "name": "GCPServerTest",
