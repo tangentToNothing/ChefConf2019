@@ -7,3 +7,6 @@ chef-repo/*
 .zip
 *.zip
 *.pptx
+stigs/old
+stigs/old/
+stigs/old/*
